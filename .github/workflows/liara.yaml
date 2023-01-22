@@ -16,5 +16,5 @@ jobs:
         env:
           LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
         run: |
-          npm i -g @liara/cli@3
+          npm i @liara/cli@3
           liara deploy --app="music-pwa-api" --api-token="$LIARA_TOKEN" --detach
