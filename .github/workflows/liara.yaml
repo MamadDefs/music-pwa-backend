@@ -13,7 +13,7 @@ jobs:
           node-version: "16"
       - name: update-liara
         env:
-          LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+          LIARA_TOKEN: ${eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2M2I2MWJmMWYzZDM5N2M1NzgyNDNjZTUiLCJpYXQiOjE2NzQzNjQ2OTF9.EnEH3quPAEP47VLzUL7pz71XjvMNk3fvhJZqm2Rw_h4}
         run: |
           npm i -g @liara/cli@3
           liara deploy --app="music-pwa-api" --api-token="$LIARA_TOKEN" --detach
