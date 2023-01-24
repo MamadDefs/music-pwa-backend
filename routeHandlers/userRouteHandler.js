@@ -151,12 +151,12 @@ exports.auth = async (req, res, next) => {
                 role: user.role
             });
         else
-            res.status(403).json({
+            res.status(200).json({
                 isLogin: false 
             });
     }
     catch(err) {
-        
+        res.status(403);
     }
 }
 
