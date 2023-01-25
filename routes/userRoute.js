@@ -9,7 +9,7 @@ userRouter.get('/activate-email/:token', userRouteHandler.activateEmail);
 
 userRouter.route('/sign-in').post(userRouteHandler.reSignInUpCheck, userRouteHandler.signInSubmission);
 
-userRouter.get('/auth', userRouteHandler.auth);
+userRouter.post('/auth', userRouteHandler.auth);
 
 userRouter.get('/logout', userRouteHandler.logOut)
 

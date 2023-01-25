@@ -130,7 +130,7 @@ exports.signInSubmission = async (req, res, next) => {
         //     maxAge: 90 * 24 * 60 * 60 * 1000,
         //     httpOnly: true
         // });
-
+        
         let userRole = user.role === 'admin' ? 'admin' : (user.role === 'user' ? 'user' : undefined);
 
         res.status(200).json({
@@ -145,7 +145,7 @@ exports.signInSubmission = async (req, res, next) => {
 
 exports.auth = async (req, res, next) => {
     try {
-        const user = await getLogedInUser(req.cookies.jwtToken);
+        const user = await getLogedInUser(req.body.jwtToken);
         if(user)
             res.status(200).json({
                 isLogin: true,
