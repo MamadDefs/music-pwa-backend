@@ -126,15 +126,16 @@ exports.signInSubmission = async (req, res, next) => {
         const token = jwt.sign({id: user._id, username: user.username}, secret, {
             expiresIn: '90d'
         });
-        res.cookie('jwtToken', token, {
-            maxAge: 90 * 24 * 60 * 60 * 1000,
-            httpOnly: true
-        });
+        // res.cookie('jwtToken', token, {
+        //     maxAge: 90 * 24 * 60 * 60 * 1000,
+        //     httpOnly: true
+        // });
 
         let userRole = user.role === 'admin' ? 'admin' : (user.role === 'user' ? 'user' : undefined);
 
         res.status(200).json({
-            userRole
+            userRole,
+            token
         });
     }
     catch(err){
