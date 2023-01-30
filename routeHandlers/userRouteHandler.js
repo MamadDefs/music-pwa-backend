@@ -23,52 +23,6 @@ awaitableJsmediatags = (filename) => {
     });
 }
 
-getLogedInUser = async (token) => {
-    try {
-        if(token){
-            const decodedToken = await promisify(jwt.verify)(token, secret);
-            const user = await User.findById(decodedToken.id);
-            return user;
-        }
-        else return undefined;
-    }
-    catch(err) {
-        next(new MyError(err, 500));
-    }
-}
-
-exports.reSignInUpCheck = async (req, res, next) => {
-    try{
-        const user = await getLogedInUser(req.cookies.jwtToken);
-        if(user) {
-            req.user = user;
-            return res.status(403).json({
-                message: 'you cannot sign in or up again!'
-            });
-        }
-        else next();
-    }
-    catch(err){
-        next(new MyError(err, 500));
-    }
-}
-
-exports.protectRoutes = async (req, res, next) => {
-    try{
-        const user = await getLogedInUser(req.cookies.jwtToken);
-        if(user) {
-            req.user = user;
-            next();
-        }
-        else res.status(403).json({
-            message: 'you are not logged in. please login to access this page.'
-        });
-    }
-    catch(err){
-        next(new MyError(err, 500));
-    }
-}
-
 exports.signUpSubmission = async (req, res, next) => {
     try{
         const user = await User.create({
@@ -80,13 +34,14 @@ exports.signUpSubmission = async (req, res, next) => {
         const token = jwt.sign({id: user._id, username: user.username}, secret, {
             expiresIn: '90d'
         });
-        res.cookie('jwtToken', token, {
-            maxAge: 90 * 24 * 60 * 60 * 1000,
-            httpOnly: true
-        });
+        // res.cookie('jwtToken', token, {
+        //     maxAge: 90 * 24 * 60 * 60 * 1000,
+        //     httpOnly: true
+        // });
 
         res.status(200).json({
-            user
+            user,
+            token
         });
     }
     catch(err){
@@ -264,8 +219,7 @@ exports.uploadProfileImage = async (req, res, next) => {
             return next(new MyError('Please upload an image', 400));
         }
         const img = req.files.profileImage;
-        const imgPath = '/uploads/profile_images/' + img.name;
-        const dir = __dirname + '/../public' + imgPath;
+        const dir = __dirname + '/../public/uploads/profile_images/' + img.name;
         console.log(img.mimetype);
         if(!img.mimetype.match(/image/g))
             return next(new MyError('Please upload an image file'), 400);
@@ -273,7 +227,7 @@ exports.uploadProfileImage = async (req, res, next) => {
         await img.mv(dir);
 
         await user.updateOne({
-            profileImage: imgPath
+            profileImage: dir
         }, {runValidators: true, new: true});
 
         res.status(200).json({
@@ -281,40 +235,6 @@ exports.uploadProfileImage = async (req, res, next) => {
         });
     } 
     catch (err) {
-        next(new MyError(err, 500));
-    }
-}
-
-exports.addToPlayList = async (req, res, next) => {
-    try {
-        const user = req.user;
-        if(user) {
-            if(req.body.playlist === undefined || req.body.music === undefined)
-                return next(new MyError('playlist name or music id must speciy.', 400));
-            const newPlayList = user.playLists;
-            const playlist = req.body.playlist;
-            const music = req.body.music;
-            
-            const list = [];
-            if(newPlayList[playlist] === undefined)
-                list.push(music);
-            else{
-                for(let i = 0; newPlayList[playlist][i] !== undefined; ++i)
-                    list.push(newPlayList[playlist][i]);
-                list.push(music);
-            }
-            newPlayList[playlist] = list;
-            
-            await user.updateOne({
-                playLists: newPlayList
-            }, {runValidators: true, new: true});
-        }
-
-        res.status(200).json({
-            user
-        });
-    }
-    catch(err) {
         next(new MyError(err, 500));
     }
 }
@@ -345,20 +265,19 @@ exports.adminUploadMusic = async (req, res, next) => {
             return next(new MyError('Please upload a music', 400));
         }
         const musicFile = req.files.music;
-        const musicPath = '/uploads/musics/' + musicFile.name;
-        const dir = __dirname + '/../public' + musicPath;
+        const dir = __dirname + '/../public/uploads/musics/' + musicFile.name;
         console.log(musicFile.mimetype);
         if(!musicFile.mimetype.match(/audio/g))
             return next(new MyError('Please upload a audio file'), 400);
         
         await musicFile.mv(dir);
-        const tags = await awaitableJsmediatags(dir);
-        console.log(tags);
+        // const tags = await awaitableJsmediatags(dir);
+        // console.log(tags);
 
         const music = await Music.create({
             title: req.body.title,
             artist: artists,
-            musicPath: musicPath,
+            musicPath: dir,
             category: categories
         });
 
