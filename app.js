@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const userRouter = require('./routes/userRoute');
+const musicRouter = require('./routes/musicRoute');
 const MyError = require('./utilities/myError');
 
 const host = '0.0.0.0';
@@ -37,6 +38,7 @@ app.get('/api', (req, res, next) => {
 });
 
 app.use('/api/users', userRouter);
+app.use('/api/musics', musicRouter);
 
 app.all('*', (req, res, next) => {
     next(new MyError('404 not found', 404));
