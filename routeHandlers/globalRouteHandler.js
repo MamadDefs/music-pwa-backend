@@ -1,7 +1,10 @@
+const jwt = require('jsonwebtoken');
 const {promisify} = require('util');
 const User = require('../models/userModel');
 const Music = require('../models/musicModel');
 const MyError = require('../utilities/myError');
+
+const secret = 'cda883fa7d79f5a70cf2e2b45149d2ccb2acc94caaa297679dccc7085cf3d097';
 
 getLogedInUser = async (token) => {
     try {

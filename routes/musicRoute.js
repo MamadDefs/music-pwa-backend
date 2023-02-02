@@ -8,6 +8,6 @@ musicRouter.post('/upload-music');
 
 musicRouter.post('/add-to-playlist', globalRouteHandler.protectRoutes, musicRouteHandler.addToPlayList);
 
-musicRouter.post('/like/:id');
+musicRouter.post('/like/:id', globalRouteHandler.protectRoutes, musicRouteHandler.like);
 
 module.exports = musicRouter;
