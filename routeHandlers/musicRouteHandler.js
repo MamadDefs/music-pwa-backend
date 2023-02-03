@@ -6,6 +6,74 @@ const MyError = require('../utilities/myError');
 
 const secret = 'cda883fa7d79f5a70cf2e2b45149d2ccb2acc94caaa297679dccc7085cf3d097';
 
+exports.allMusics = async (req, res, next) => {
+    try {
+        const  musics = await Music.find();
+        res.status(200).json({
+            musics
+        });
+    }
+    catch(err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.uploadMusic = async (req, res, next) => {
+    try {
+        if (req.user.role !== 'admin') return next(new MyError('access denied.', 403));
+
+        const title = req.body.title;
+
+        const artists = req.body.artist.split(',');
+        artists.forEach((el, index, arr) => {
+            arr[index] = el.trim();
+        });
+
+        const categories = req.body.category.split(',');
+        categories.forEach((el, index, arr) => {
+            arr[index] = el.trim();
+        });
+
+        // if (!req.files) {
+        //     return next(new MyError('Please upload a music', 400));
+        // }
+
+        const musicLink = req.body.musicLink;
+        const coverImg = req.body.coverImage;
+
+        const desc = req.body.desc;
+
+        // const musicFile = req.files.music;
+        // const dir = __dirname + '/../public/uploads/musics/' + musicFile.name;
+        // console.log(musicFile.mimetype);
+        // if (!musicFile.mimetype.match(/audio/g))
+        //     return next(new MyError('Please upload a audio file'), 400);
+
+        // await musicFile.mv(dir);
+        // const tags = await awaitableJsmediatags(dir);
+        // console.log(tags);
+
+        const music = await Music.create({
+            title,
+            artist: artists,
+            musicPath: link,
+            category: categories,
+            description: desc,
+            coverImagePath: coverImg
+        });
+
+        let status = false;
+        if(music) status = true;
+
+        res.status(200).json({
+            status
+        });
+    }
+    catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
 exports.addToPlayList = async (req, res, next) => {
     try {
         const user = req.user;

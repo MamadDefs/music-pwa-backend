@@ -4,7 +4,9 @@ const globalRouteHandler = require('../routeHandlers/globalRouteHandler');
 
 const musicRouter = new express.Router();
 
-musicRouter.post('/upload-music');
+musicRouter.get('/all', musicRouteHandler.allMusics);
+
+musicRouter.post('/upload-music', globalRouteHandler.protectRoutes, musicRouteHandler.uploadMusic);
 
 musicRouter.post('/add-to-playlist', globalRouteHandler.protectRoutes, musicRouteHandler.addToPlayList);
 
