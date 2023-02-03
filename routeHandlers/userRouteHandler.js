@@ -212,14 +212,15 @@ exports.userProfile = async (req, res, next) => {
 
 exports.uploadProfileImage = async (req, res, next) => {
     try {
+
         const user = req.user;
         if (!user) return next(new MyError('Please log in', 403));
 
-        if (!req.body.profileImage) {
+        if (!req.files.profileImage) {
             return next(new MyError('Please upload an image', 400));
         }
-        const img = req.body.profileImage;
-        const dir = __dirname + '/../public/uploads/profile_images/' + img.name;
+        const img = req.files.profileImage;
+        const dir = '/public/img/' + img.name;
         console.log(img.mimetype);
         if (!img.mimetype.match(/image/ig))
             return next(new MyError('Please upload an image file'), 400);
