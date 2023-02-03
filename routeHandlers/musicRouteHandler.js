@@ -8,12 +8,30 @@ const secret = 'cda883fa7d79f5a70cf2e2b45149d2ccb2acc94caaa297679dccc7085cf3d097
 
 exports.allMusics = async (req, res, next) => {
     try {
-        const musics = await Music.find();
+        const page = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 20;
+        
+        const musics = await Music.find()
+        .skip((page - 1) * limit)
+        .limit(limit);
+        
         res.status(200).json({
             musics
         });
     }
     catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.musicCount = async (req, res, next) => {
+    try {
+        const count = await Music.find().count();
+        res.status(200).json({
+            count
+        });
+    }
+    catch(err) {
         next(new MyError(err, 500));
     }
 }
