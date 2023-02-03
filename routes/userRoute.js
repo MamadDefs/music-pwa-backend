@@ -22,7 +22,4 @@ userRouter.route('/reset-password/:token').get(userRouteHandler.resetPasswordFor
 userRouter.get('/profile', globalRouteHandler.protectRoutes, userRouteHandler.userProfile);
 userRouter.post('/profile/upload-image', globalRouteHandler.protectRoutes, userRouteHandler.uploadProfileImage);
 
-userRouter.route('/admin').get(userRouteHandler.adminPanel)
-.post(globalRouteHandler.protectRoutes, userRouteHandler.adminUploadMusic);
-
 module.exports = userRouter;
