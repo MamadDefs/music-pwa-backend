@@ -6,6 +6,7 @@ const musicRouter = new express.Router();
 
 musicRouter.get('/all', musicRouteHandler.allMusics);
 musicRouter.get('/count', musicRouteHandler.musicCount);
+musicRouter.get('/search', musicRouteHandler.musicSearch);
 
 musicRouter.post('/upload-music', globalRouteHandler.protectRoutes, musicRouteHandler.uploadMusic);
 

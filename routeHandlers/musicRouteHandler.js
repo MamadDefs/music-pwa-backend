@@ -36,6 +36,24 @@ exports.musicCount = async (req, res, next) => {
     }
 }
 
+exports.musicSearch = async (req, res, next) => {
+    try {
+        const word = req.query.q;
+        const regex = new RegExp(word, 'i');
+
+        const musics = await Music.find({
+            title: {$regex: regex}
+        });
+
+        res.status(200).json({
+            musics
+        });
+    }
+    catch(err) {
+        next(new MyError(err, 500));
+    }
+}
+
 exports.uploadMusic = async (req, res, next) => {
     try {
         if (req.user.role !== 'admin') return next(new MyError('access denied.', 403));
