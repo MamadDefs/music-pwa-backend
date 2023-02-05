@@ -70,29 +70,29 @@ exports.uploadMusic = async (req, res, next) => {
             arr[index] = el.trim();
         });
 
-        // if (!req.files) {
-        //     return next(new MyError('Please upload a music', 400));
-        // }
+        if (!req.files) {
+            return next(new MyError('Please upload a music', 400));
+        }
 
-        const musicLink = req.body.musicLink;
         const coverImg = req.body.coverImage;
 
         const desc = req.body.desc;
 
-        // const musicFile = req.files.music;
-        // const dir = __dirname + '/../public/uploads/musics/' + musicFile.name;
-        // console.log(musicFile.mimetype);
-        // if (!musicFile.mimetype.match(/audio/g))
-        //     return next(new MyError('Please upload a audio file'), 400);
+        const musicFile = req.files.music;
+        const link = 'uploads/musics/' + musicFile.name;
+        const dir = __dirname + '/../public/' + link;
+        console.log(musicFile.mimetype);
+        if (!musicFile.mimetype.match(/audio/g))
+            return next(new MyError('Please upload a audio file'), 400);
 
-        // await musicFile.mv(dir);
+        await musicFile.mv(dir);
         // const tags = await awaitableJsmediatags(dir);
         // console.log(tags);
 
         const music = await Music.create({
             title,
             artist: artists,
-            musicPath: musicLink,
+            musicPath: 'https://music-pwa-api.iran.liara.run/' + link,
             category: categories,
             description: desc,
             coverImagePath: coverImg

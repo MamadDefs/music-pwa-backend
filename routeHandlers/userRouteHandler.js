@@ -220,15 +220,16 @@ exports.uploadProfileImage = async (req, res, next) => {
             return next(new MyError('Please upload an image', 400));
         }
         const img = req.files.profileImage;
-        const dir = '/public/img/' + img.name;
+        const link = 'uploads/images/' + img.name;
+        const dir = __dirname + '/../public/' + link;
         console.log(img.mimetype);
-        if (!img.mimetype.match(/image/ig))
+        if (!img.mimetype.match(/image/g))
             return next(new MyError('Please upload an image file'), 400);
 
         await img.mv(dir);
 
         await user.updateOne({
-            profileImage: dir
+            profileImage: 'https://music-pwa-api.iran.liara.run/' + link
         }, { runValidators: true, new: true });
 
         res.status(200).json({
