@@ -10,11 +10,11 @@ exports.allMusics = async (req, res, next) => {
     try {
         const page = req.query.page * 1 || 1;
         const limit = req.query.limit * 1 || 20;
-        
+
         const musics = await Music.find()
-        .skip((page - 1) * limit)
-        .limit(limit);
-        
+            .skip((page - 1) * limit)
+            .limit(limit);
+
         res.status(200).json({
             musics
         });
@@ -31,7 +31,7 @@ exports.musicCount = async (req, res, next) => {
             count
         });
     }
-    catch(err) {
+    catch (err) {
         next(new MyError(err, 500));
     }
 }
@@ -42,14 +42,14 @@ exports.musicSearch = async (req, res, next) => {
         const regex = new RegExp(word, 'i');
 
         const musics = await Music.find({
-            title: {$regex: regex}
+            title: { $regex: regex }
         });
 
         res.status(200).json({
             musics
         });
     }
-    catch(err) {
+    catch (err) {
         next(new MyError(err, 500));
     }
 }
@@ -74,7 +74,7 @@ exports.uploadMusic = async (req, res, next) => {
             return next(new MyError('Please upload a music', 400));
         }
 
-        const coverImg = req.body.coverImage;
+        const coverImg = req.files.coverImage;
 
         const desc = req.body.desc;
 
