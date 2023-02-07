@@ -75,6 +75,9 @@ exports.uploadMusic = async (req, res, next) => {
         }
 
         const coverImg = req.files.coverImage;
+        const CIlink = 'uploads/coverImage/' + coverImg.name;
+        const CIdir = __dirname + '/../public/' + CIlink;
+        await coverImg.mv(CIdir);
 
         const desc = req.body.desc;
 
@@ -95,7 +98,7 @@ exports.uploadMusic = async (req, res, next) => {
             musicPath: 'https://music-pwa-api.iran.liara.run/' + link,
             category: categories,
             description: desc,
-            coverImagePath: coverImg
+            coverImagePath: 'https://music-pwa-api.iran.liara.run/' + CIlink
         });
 
         let status = false;
