@@ -76,7 +76,7 @@ exports.signInSubmission = async (req, res, next) => {
             username: req.body.username
         }).select('+password');
         if (!user || !await bcrypt.compare(req.body.password, user.password))
-            return next(new MyError('There is no user with this username or password is wrong.', 401));
+            return next(new MyError('نام کاربری یا رمز عبورتان اشتباه است. لطفا دوباره تلاش کنید', 401));
 
         const token = jwt.sign({ id: user._id, username: user.username }, secret, {
             expiresIn: '90d'
