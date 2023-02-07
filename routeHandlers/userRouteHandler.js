@@ -212,7 +212,6 @@ exports.userProfile = async (req, res, next) => {
 
 exports.uploadProfileImage = async (req, res, next) => {
     try {
-
         const user = req.user;
         if (!user) return next(new MyError('Please log in', 403));
 
