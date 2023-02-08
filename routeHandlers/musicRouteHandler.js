@@ -56,7 +56,7 @@ exports.musicSearch = async (req, res, next) => {
 
 exports.uploadMusic = async (req, res, next) => {
     try {
-        if (req.user.role !== 'admin') return next(new MyError('access denied.', 403));
+        if (req.user.role !== 'admin') return next(new MyError('متاسفانه شما برای انجام این کار دسترسی ندارید.', 403));
 
         const title = req.body.title;
 
@@ -70,14 +70,19 @@ exports.uploadMusic = async (req, res, next) => {
             arr[index] = el.trim();
         });
 
-        if (!req.files) {
-            return next(new MyError('Please upload a music', 400));
+        if (!req.files.music) {
+            return next(new MyError('لطفا آهنگ مورد نظر را آپلود نمایید.', 400));
         }
 
         const coverImg = req.files.coverImage;
-        const CIlink = 'uploads/coverImage/' + coverImg.name;
-        const CIdir = __dirname + '/../public/' + CIlink;
-        await coverImg.mv(CIdir);
+        let CIlink;
+        if(coverImg){
+            CIlink = 'uploads/coverImage/' + coverImg.name;
+            const CIdir = __dirname + '/../public/' + CIlink;
+            if (!musicFile.mimetype.match(/audio/g))
+                return next(new MyError('فایل انتخاب شده تصویر نمی‌باشد. لطفا یک فایل معتبر برای تصویر آهنگ آپلود کنید.'), 400);
+            await coverImg.mv(CIdir);
+    }
 
         const desc = req.body.desc;
 
@@ -86,8 +91,7 @@ exports.uploadMusic = async (req, res, next) => {
         const dir = __dirname + '/../public/' + link;
         console.log(musicFile.mimetype);
         if (!musicFile.mimetype.match(/audio/g))
-            return next(new MyError('Please upload a audio file'), 400);
-
+            return next(new MyError('فایل انتخاب شده آهنگ نیست. لطفا یک فایل معتبر با پسوند آهنگ آپلود کنید.'), 400);
         await musicFile.mv(dir);
         // const tags = await awaitableJsmediatags(dir);
         // console.log(tags);
