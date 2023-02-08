@@ -82,6 +82,7 @@ exports.uploadMusic = async (req, res, next) => {
             if (!musicFile.mimetype.match(/audio/g))
                 return next(new MyError('فایل انتخاب شده تصویر نمی‌باشد. لطفا یک فایل معتبر برای تصویر آهنگ آپلود کنید.'), 400);
             await coverImg.mv(CIdir);
+            CIlink = 'https://music-pwa-api.iran.liara.run/' + CIlink;
     }
 
         const desc = req.body.desc;
@@ -102,7 +103,7 @@ exports.uploadMusic = async (req, res, next) => {
             musicPath: 'https://music-pwa-api.iran.liara.run/' + link,
             category: categories,
             description: desc,
-            coverImagePath: 'https://music-pwa-api.iran.liara.run/' + CIlink
+            coverImagePath: CIlink
         });
 
         let status = false;
