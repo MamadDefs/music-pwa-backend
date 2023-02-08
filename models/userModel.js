@@ -60,11 +60,7 @@ userSchema.pre('save', async function(next) {
         const encryptedPassword = await bcrypt.hash(this.password, 12);
         this.password = encryptedPassword;
         this.passwordConfirm = undefined;
-        
-        if(this.isNew){
-            const activationToken = crypto.randomBytes(32).toString('hex');
-            this.activationToken = crypto.createHash('sha256').update(activationToken).digest('hex');
-        }
+
         next();
     }
     catch(err){
@@ -82,7 +78,9 @@ userSchema.post('save', async function(doc, next){
     try{
         if(!this.wasNew) return next();
     
-        const activateURL = `http://127.0.0.1:3000/users/activate-email/${this.activationToken}`;
+        const activationToken = this.createActivationToken();
+        this.save({ validateBeforeSave: false });
+        const activateURL = `http://127.0.0.1:3000/users/activate-email/${activationToken}`;
         const msg = `Please click the following URL to activate your account.\nIf you don't create an account in music pwa app please ignore this email.\n${activateURL}`;
         await sendMail.sendMail({
             email: this.email,
@@ -100,6 +98,12 @@ userSchema.methods.createResetToken = function(){
     this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     this.resetPasswordExpiredTime = Date.now() + 15 * 60 * 1000;
     return resetToken;
+}
+
+userSchema.methods.createActivationToken = function(){
+    const activationToken = crypto.randomBytes(32).toString('hex');
+    this.activationToken = crypto.createHash('sha256').update(activationToken).digest('hex');
+    return activationToken;
 }
 
 const User = mongoose.model('User', userSchema);
