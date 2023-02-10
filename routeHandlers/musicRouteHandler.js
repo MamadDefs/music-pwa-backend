@@ -79,7 +79,7 @@ exports.uploadMusic = async (req, res, next) => {
         if(coverImg){
             CIlink = 'uploads/coverImage/' + coverImg.name;
             const CIdir = __dirname + '/../public/' + CIlink;
-            if (!musicFile.mimetype.match(/audio/g))
+            if (!coverImg.mimetype.match(/image/g))
                 return next(new MyError('فایل انتخاب شده تصویر نمی‌باشد. لطفا یک فایل معتبر برای تصویر آهنگ آپلود کنید.'), 400);
             await coverImg.mv(CIdir);
             CIlink = 'https://music-pwa-api.iran.liara.run/' + CIlink;
