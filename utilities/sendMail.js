@@ -2,16 +2,16 @@ const nodeMailer = require('nodemailer');
 
 exports.sendMail = async (options) => {
     const transporter = nodeMailer.createTransport({
-        host: 'smtp.mailtrap.io',
-        port: 2525,
+        host: 'smtp.liara.ir',
+        port: 587,
         auth: {
-            user: 'e19b19fc4c39d0',
-            pass: '0b9c76872d6868'
+            user: 'QUzgeuYIyPCOySdI',
+            pass: 'ca7dcd81-85c7-4b1e-9d17-0f1e04b8ea5c'
         }
     });
 
     const mailOptions = {
-        from: 'ourUntitledProject <security@ouruntitledproject.com>',
+        from: 'Music PWA <verify@mail.music-pwa.ir>',
         to: options.email,
         subject: options.subject,
         text: options.message

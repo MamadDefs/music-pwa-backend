@@ -17,7 +17,8 @@ const musicSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Where is located the music!']
     },
-    coverImagePath: String
+    coverImagePath: String,
+    description: String
 });
 
 const Music = mongoose.model('Music', musicSchema);

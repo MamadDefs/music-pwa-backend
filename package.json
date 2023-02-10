@@ -16,6 +16,8 @@
   "author": "alibizi",
   "license": "GPL",
   "dependencies": {
+    "aws-sdk": "^2.1308.0",
+    "basic-ftp": "^5.0.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.6",

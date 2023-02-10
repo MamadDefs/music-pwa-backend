@@ -59,7 +59,7 @@ exports.activateEmail = async (req, res, next) => {
                 isActivated: true,
                 activationToken: null
             }, { runValidators: true, new: true });
-        if (!user) return next(new MyError('User not found or already activated.', 400));
+        if (!user) return next(new MyError('کاربر یافت نشد یا حساب کاربری قبلا فعال شده است.', 400));
 
         res.status(200).json({
             user
@@ -76,7 +76,7 @@ exports.signInSubmission = async (req, res, next) => {
             username: req.body.username
         }).select('+password');
         if (!user || !await bcrypt.compare(req.body.password, user.password))
-            return next(new MyError('There is no user with this username or password is wrong.', 401));
+            return next(new MyError('نام کاربری یا رمز عبور اشتباه است. لطفا دوباره تلاش کنید.', 401));
 
         const token = jwt.sign({ id: user._id, username: user.username }, secret, {
             expiresIn: '90d'
@@ -174,7 +174,7 @@ exports.resetPasswordSubmission = async (req, res, next) => {
             resetPasswordToken: hashedToken,
             resetPasswordExpiredTime: { $gt: Date.now() }
         });
-        if (!user) return next(new MyError('The token is Invalid OR has been Expired.', 401));
+        if (!user) return next(new MyError('توکن ارسال شده نامعتبر می‌باشد.', 401));
 
         user.password = req.body.password;
         user.passwordConfirm = req.body.passwordConfirm;
@@ -191,7 +191,7 @@ exports.resetPasswordSubmission = async (req, res, next) => {
         });
 
         res.status(200).json({
-            message: 'Password changed successfully.'
+            message: 'رمز عبور با موفقیت تغییر یافت.'
         });
     }
     catch (err) {
@@ -213,21 +213,22 @@ exports.userProfile = async (req, res, next) => {
 exports.uploadProfileImage = async (req, res, next) => {
     try {
         const user = req.user;
-        if (!user) return next(new MyError('Please log in', 403));
+        //if (!user) return next(new MyError('Please log in', 403));
 
-        if (!req.body.profileImage) {
-            return next(new MyError('Please upload an image', 400));
+        if (!req.files.profileImage) {
+            return next(new MyError('لطفا یک تصویر آپلود کنید.', 400));
         }
-        const img = req.body.profileImage;
-        const dir = __dirname + '/../public/uploads/profile_images/' + img.name;
+        const img = req.files.profileImage;
+        const link = 'uploads/images/' + img.name;
+        const dir = __dirname + '/../public/' + link;
         console.log(img.mimetype);
-        if (!img.mimetype.match(/image/ig))
-            return next(new MyError('Please upload an image file'), 400);
+        if (!img.mimetype.match(/image/g))
+            return next(new MyError('فایل انتخاب شده تصویر نمی‌باشد. لطفا یک تصویر معتبر آپلود کنید.'), 400);
 
         await img.mv(dir);
 
         await user.updateOne({
-            profileImage: dir
+            profileImage: 'https://music-pwa-api.iran.liara.run/' + link
         }, { runValidators: true, new: true });
 
         res.status(200).json({
@@ -242,48 +243,6 @@ exports.uploadProfileImage = async (req, res, next) => {
 exports.adminPanel = async (req, res, next) => {
     try {
 
-    }
-    catch (err) {
-        next(new MyError(err, 500));
-    }
-}
-
-exports.adminUploadMusic = async (req, res, next) => {
-    try {
-        if (req.user.role !== 'admin') return next(new MyError('access denied.', 403));
-        const artists = req.body.artist.split(',');
-        artists.forEach((el, index, arr) => {
-            arr[index] = el.trim();
-        });
-
-        const categories = req.body.category.split(',');
-        categories.forEach((el, index, arr) => {
-            arr[index] = el.trim();
-        });
-
-        if (!req.files) {
-            return next(new MyError('Please upload a music', 400));
-        }
-        const musicFile = req.files.music;
-        const dir = __dirname + '/../public/uploads/musics/' + musicFile.name;
-        console.log(musicFile.mimetype);
-        if (!musicFile.mimetype.match(/audio/g))
-            return next(new MyError('Please upload a audio file'), 400);
-
-        await musicFile.mv(dir);
-        // const tags = await awaitableJsmediatags(dir);
-        // console.log(tags);
-
-        const music = await Music.create({
-            title: req.body.title,
-            artist: artists,
-            musicPath: dir,
-            category: categories
-        });
-
-        res.status(200).json({
-            music
-        });
     }
     catch (err) {
         next(new MyError(err, 500));
