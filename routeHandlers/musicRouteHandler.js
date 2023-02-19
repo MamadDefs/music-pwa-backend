@@ -45,6 +45,8 @@ exports.musicSearch = async (req, res, next) => {
             title: { $regex: regex }
         });
 
+        //const musics = await Music.fuzzySearch('test');
+
         res.status(200).json({
             musics
         });

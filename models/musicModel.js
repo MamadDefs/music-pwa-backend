@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fuzzy = require('mongoose-fuzzy-searching');
 
 const musicSchema = new mongoose.Schema({
     title: {
@@ -20,6 +21,10 @@ const musicSchema = new mongoose.Schema({
     coverImagePath: String,
     description: String
 });
+
+musicSchema.plugin(fuzzy, {
+    fields: ['title']
+})
 
 const Music = mongoose.model('Music', musicSchema);
 

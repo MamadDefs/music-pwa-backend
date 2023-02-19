@@ -27,6 +27,7 @@
     "jsmediatags": "^3.9.7",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.7.2",
+    "mongoose-fuzzy-searching": "^2.0.2",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
     "validator": "^13.7.0"
