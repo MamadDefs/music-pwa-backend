@@ -39,7 +39,7 @@ exports.musicCount = async (req, res, next) => {
 exports.musicSearch = async (req, res, next) => {
     try {
         const word = req.query.q;
-        const regex = new RegExp(word, 'i');
+        const regex = new RegExp('.*' + word + '.*', 'i');
 
         const musics = await Music.find({
             title: { $regex: regex }
