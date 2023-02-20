@@ -39,7 +39,7 @@ exports.musicCount = async (req, res, next) => {
 exports.musicSearch = async (req, res, next) => {
     try {
         const word = req.query.q;
-        if(!word) return next(new MyError('لطفا عبارتی را برای جست و جو وارد کنید.', 400));
+        if(!word) return next(new MyError('لطفا عبارتی را برای جست و جو وارد نمایید.', 400));
         
         // const regex = new RegExp('.*' + word + '.*', 'i');
 
