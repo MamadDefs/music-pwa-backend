@@ -39,18 +39,13 @@ exports.musicCount = async (req, res, next) => {
 exports.musicSearch = async (req, res, next) => {
     try {
         const word = req.query.q;
+        if(!word) return next(new MyError('لطفا عبارتی را برای جست و جو وارد کنید.', 400));
+        
         // const regex = new RegExp('.*' + word + '.*', 'i');
 
         // const musics = await Music.find({
         //     title: { $regex: regex }
         // });
-
-        // const music = new Music({
-        //     title: 'test123',
-        //     category: 'none',
-        //     musicPath: 'none'
-        // });
-        // await music.save();
 
         const musics = await Music.fuzzySearch(word);
 
