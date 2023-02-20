@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const fuzzy = require('mongoose-fuzzy-searching');
+const fuzzySearch = require('mongoose-fuzzy-searching');
 
 const musicSchema = new mongoose.Schema({
     title: {
@@ -22,8 +22,12 @@ const musicSchema = new mongoose.Schema({
     description: String
 });
 
-musicSchema.plugin(fuzzy, {
-    fields: ['title']
+musicSchema.plugin(fuzzySearch, {
+    fields: [{
+        name: 'title',
+        minSize: 3,
+        prifixOnly: true
+    }]
 })
 
 const Music = mongoose.model('Music', musicSchema);

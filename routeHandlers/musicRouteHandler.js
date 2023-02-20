@@ -41,11 +41,18 @@ exports.musicSearch = async (req, res, next) => {
         const word = req.query.q;
         const regex = new RegExp('.*' + word + '.*', 'i');
 
-        const musics = await Music.find({
-            title: { $regex: regex }
-        });
+        // const musics = await Music.find({
+        //     title: { $regex: regex }
+        // });
 
-        //const musics = await Music.fuzzySearch('test');
+        // const music = new Music({
+        //     title: 'test123',
+        //     category: 'none',
+        //     musicPath: 'none'
+        // });
+        // await music.save();
+
+        const musics = await Music.fuzzySearch('tes');
 
         res.status(200).json({
             musics
