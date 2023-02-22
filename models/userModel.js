@@ -49,7 +49,6 @@ const userSchema = new mongoose.Schema({
         default: false
     },
     activationToken: String,
-    playLists: mongoose.Schema.Types.Mixed,
     profileImage: String
 });
 

@@ -10,8 +10,6 @@ musicRouter.get('/search', musicRouteHandler.musicSearch);
 
 musicRouter.post('/upload-music', globalRouteHandler.protectRoutes, musicRouteHandler.uploadMusic);
 
-musicRouter.post('/add-to-playlist', globalRouteHandler.protectRoutes, musicRouteHandler.addToPlayList);
-
-musicRouter.post('/like/:id', globalRouteHandler.protectRoutes, musicRouteHandler.like);
+//musicRouter.post('/like/:id', globalRouteHandler.protectRoutes, musicRouteHandler.like);
 
 module.exports = musicRouter;

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const userRouter = require('./routes/userRoute');
 const musicRouter = require('./routes/musicRoute');
+const playlistRouter = require('./routes/playlistRoute');
 const MyError = require('./utilities/myError');
 
 const host = '0.0.0.0';
@@ -24,12 +25,9 @@ app.use(fileUpload({
     createParentPath: true,
     limits: {fileSize: 20 * 1024 * 1024},
     limitHandler: (req, res, next) => {
-        next(new MyError('File you uploaded is bigger than 10MB!', 400));
+        next(new MyError('فایلی که آپلود کرده‌اید بیشتر از 20 مگابایت می‌باشد.', 400));
     }
 }))
-
-//sign in {username,password}
-//sign up {username,email,password,passwordConfirm}
 
 app.get('/api', (req, res, next) => {
     res.status(200).json({
@@ -39,6 +37,7 @@ app.get('/api', (req, res, next) => {
 
 app.use('/api/users', userRouter);
 app.use('/api/musics', musicRouter);
+app.use('/api/playlists', playlistRouter);
 
 app.all('*', (req, res, next) => {
     next(new MyError('404 not found', 404));

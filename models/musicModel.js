@@ -28,7 +28,7 @@ musicSchema.plugin(fuzzySearch, {
         minSize: 3,
         prifixOnly: true
     }]
-})
+});
 
 const Music = mongoose.model('Music', musicSchema);
 
