@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const shortid = require('shortid');
 
 const playlistSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        default: shortid.generate
+    },
     title: {
         type: String,
         required: [true, 'لطفا یک عنوان برای پلی‌لیست خود انتخاب کنید.']
