@@ -26,7 +26,7 @@ exports.reSignInUpCheck = async (req, res, next) => {
         if(user) {
             req.user = user;
             return res.status(403).json({
-                message: 'you cannot sign in or up again!'
+                error: 'شما قبلا وارد حساب کاربری خود شده‌اید.'
             });
         }
         else next();
@@ -44,7 +44,7 @@ exports.protectRoutes = async (req, res, next) => {
             next();
         }
         else res.status(403).json({
-            message: 'you are not logged in. please login to access this page.'
+            error: 'شما به حساب کاربری خود وارد نشده‌اید. لطفا برای ادامه وارد حساب کاربری خود شوید.'
         });
     }
     catch(err){

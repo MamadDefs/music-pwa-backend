@@ -14,28 +14,51 @@ exports.playlists = async (req, res, next) => {
             owner: userID
         });
 
-        const playlistWithMusics = [];
-        for(let j = 0; j < playlists.length; j++){
-            const title = playlists[j].title;
-            const id = playlists[j]._id;
-            const musics = [];
-            for(let i = 0; i < playlists[j].musics.length; i++){
-                const music = await Music.findById(playlists[j].musics[i]);
-                musics.push(music);
-            }
-            const record = {
-                id,
-                title,
-                musics
-            }
-            playlistWithMusics.push(record);
-        }
+        // const playlistWithMusics = [];
+        // for(let j = 0; j < playlists.length; j++){
+        //     const title = playlists[j].title;
+        //     const id = playlists[j]._id;
+        //     const musics = [];
+        //     for(let i = 0; i < playlists[j].musics.length; i++){
+        //         const music = await Music.findById(playlists[j].musics[i]);
+        //         musics.push(music);
+        //     }
+        //     const record = {
+        //         id,
+        //         title,
+        //         musics
+        //     }
+        //     playlistWithMusics.push(record);
+        // }
 
         res.status(200).json({
-            playlistWithMusics
+            playlists
         });
     }
     catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.playlistById = async (req, res, next) => {
+    try {
+        const playlistID = req.params.id;
+        const playlist = await Playlist.findById(playlistID);
+
+        const musics = [];
+        for(let i = 0; i < playlist.musics.length; i++){
+            const music = await Music.findById(playlist.musics[i]);
+            musics.push(music);
+        }
+
+        res.status(200).json({
+            playlist: {
+                title: playlist.title,
+                musics
+            }
+        });
+    }
+    catch(err) {
         next(new MyError(err, 500));
     }
 }
@@ -69,14 +92,12 @@ exports.addToPlayList = async (req, res, next) => {
 
         const playlistID = req.body.playlistID;
         const musicID = req.body.music;
-        const userID = user._id;
+        const userID = user.id;
 
-        const playlist = await Playlist.findOne({
-            _id: playlistID,
-            owner: userID
-        });
+        const playlist = await Playlist.findById(playlistID);
 
         const list = playlist?.musics || [];
+        if(list.includes(musicID)) return next(new MyError('این موسیقی قبلا در این پلی‌لیست وجود دارد.', 400));
         list.push(musicID);
 
         await playlist?.updateOne({
