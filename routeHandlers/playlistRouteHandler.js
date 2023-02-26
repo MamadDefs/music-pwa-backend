@@ -17,12 +17,14 @@ exports.playlists = async (req, res, next) => {
         const playlistWithMusics = [];
         for(let j = 0; j < playlists.length; j++){
             const title = playlists[j].title;
+            const id = playlists[j]._id;
             const musics = [];
             for(let i = 0; i < playlists[j].musics.length; i++){
                 const music = await Music.findById(playlists[j].musics[i]);
                 musics.push(music);
             }
             const record = {
+                id,
                 title,
                 musics
             }
