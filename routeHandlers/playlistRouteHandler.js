@@ -8,7 +8,7 @@ exports.playlists = async (req, res, next) => {
         const user = req.user;
         if (!user) return next(new MyError('لطفا ابتدا وارد حساب کاربری خود شوید.', 401));
 
-        const userID = user.id;
+        const userID = user._id;
 
         const playlists = await Playlist.find({
             owner: userID
@@ -65,19 +65,19 @@ exports.addToPlayList = async (req, res, next) => {
         const user = req.user;
         if (!user) return next(new MyError('لطفا ابتدا وارد حساب کاربری خود شوید.', 401));
 
-        const title = req.body.title;
-        const msuicID = req.body.music;
-        const userID = user.id;
+        const playlistID = req.body.playlistID;
+        const musicID = req.body.music;
+        const userID = user._id;
 
         const playlist = await Playlist.findOne({
-            title: title,
+            _id: playlistID,
             owner: userID
         });
 
-        const list = playlist.musics;
-        list.push(msuicID);
+        const list = playlist?.musics || [];
+        list.push(musicID);
 
-        await playlist.updateOne({
+        await playlist?.updateOne({
             musics: list
         }, {runValidators: true, new: true});
 
