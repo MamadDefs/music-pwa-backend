@@ -6,7 +6,7 @@ const MyError = require('../utilities/myError');
 
 const secret = 'cda883fa7d79f5a70cf2e2b45149d2ccb2acc94caaa297679dccc7085cf3d097';
 
-getLogedInUser = async (token) => {
+getLogedInUser = async (token, next) => {
     try {
         if(token){
             const decodedToken = await promisify(jwt.verify)(token, secret);
@@ -22,12 +22,10 @@ getLogedInUser = async (token) => {
 
 exports.reSignInUpCheck = async (req, res, next) => {
     try{
-        const user = await getLogedInUser(req.body.jwtToken);
+        const user = await getLogedInUser(req.body.jwtToken, next);
         if(user) {
             req.user = user;
-            return res.status(403).json({
-                error: 'شما قبلا وارد حساب کاربری خود شده‌اید.'
-            });
+            next(new MyError('شما قبلا وارد حساب کاربری خود شده‌اید.', 403));
         }
         else next();
     }
@@ -38,14 +36,12 @@ exports.reSignInUpCheck = async (req, res, next) => {
 
 exports.protectRoutes = async (req, res, next) => {
     try{
-        const user = await getLogedInUser(req.body.jwtToken);
+        const user = await getLogedInUser(req.body.jwtToken, next);
         if(user) {
             req.user = user;
             next();
         }
-        else res.status(403).json({
-            error: 'شما به حساب کاربری خود وارد نشده‌اید. لطفا برای ادامه وارد حساب کاربری خود شوید.'
-        });
+        else next(new MyError('شما به حساب کاربری خود وارد نشده‌اید. لطفا برای ادامه وارد حساب کاربری خود شوید.', 401));
     }
     catch(err){
         next(new MyError(err, 500));
