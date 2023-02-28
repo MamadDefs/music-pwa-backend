@@ -120,23 +120,49 @@ exports.uploadMusic = async (req, res, next) => {
     }
 }
 
-/*
-exports.like = async (req, res, next) => {
+exports.liked = async (req, res, next) => {
     try {
+        const user = req.user;
+
         const musicID = req.params.id;
         const music = await Music.findById(musicID);
 
-        const decodedToken = await promisify(jwt.verify)(req.body.jwtToken, secret);
-        const userID = decodedToken.id;
+        const userID = user.id;
 
-        if (music.likes.includes(userID)) {
-            for (let i = 0; i < music.likes.length; i++)
-                if (music.likes[i] === userID)
-                    music.likes.splice(i, 1);
+        let isLiked = false;
+        if(music.likers.includes(userID))
+            isLiked = true;
+        
+        res.status(200).json({
+            isLiked
+        });
+    } 
+    catch(err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.like = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const musicID = req.params.id;
+        const music = await Music.findById(musicID);
+
+        const userID = user.id;
+
+        const list = music.likers;
+
+        if (list.includes(userID)) {
+            for (let i = 0; i < list.length; i++)
+                if (list[i] === userID)
+                    list.splice(i, 1);
         }
-        else music.likes.push(userID);
+        else list.push(userID);
 
-        music.save();
+        await music.updateOne({
+            likers: list
+        }, {runValidators: true, new: true});
 
         res.end();
     }
@@ -144,4 +170,3 @@ exports.like = async (req, res, next) => {
         next(new MyError(err, 500));
     }
 }
-*/

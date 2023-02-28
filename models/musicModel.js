@@ -19,7 +19,8 @@ const musicSchema = new mongoose.Schema({
         required: [true, 'Where is located the music!']
     },
     coverImagePath: String,
-    description: String
+    description: String,
+    likers: [String]
 });
 
 musicSchema.plugin(fuzzySearch, {
