@@ -6,7 +6,7 @@ const playlistRouter = new express.Router();
 
 playlistRouter.post('/', globalRouteHandler.protectRoutes, playlistRouteHandler.playlists);
 
-playlistRouter.post('/:id', globalRouteHandler.protectRoutes, playlistRouteHandler.playlistById);
+playlistRouter.post('/id/:id', globalRouteHandler.protectRoutes, playlistRouteHandler.playlistById);
 
 playlistRouter.post('/create', globalRouteHandler.protectRoutes, playlistRouteHandler.createPlaylist);
 
