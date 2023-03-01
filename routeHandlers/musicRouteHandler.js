@@ -79,7 +79,7 @@ exports.uploadMusic = async (req, res, next) => {
         const coverImg = req.files.coverImage;
         let CIlink;
         if(coverImg){
-            CIlink = 'uploads/coverImage/' + coverImg.name;
+            CIlink = 'uploads/coverImage/' + Date.now() + '_' + coverImg.name;
             const CIdir = __dirname + '/../public/' + CIlink;
             if (!coverImg.mimetype.match(/image/g))
                 return next(new MyError('فایل انتخاب شده تصویر نمی‌باشد. لطفا یک فایل معتبر برای تصویر آهنگ آپلود کنید.'), 400);
@@ -90,7 +90,7 @@ exports.uploadMusic = async (req, res, next) => {
         const desc = req.body.desc;
 
         const musicFile = req.files.music;
-        const link = 'uploads/musics/' + musicFile.name;
+        const link = 'uploads/musics/' + Date.now() + '_' + musicFile.name;
         const dir = __dirname + '/../public/' + link;
         console.log(musicFile.mimetype);
         if (!musicFile.mimetype.match(/audio/g))

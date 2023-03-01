@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jsmediatags = require('jsmediatags');
 const { promisify } = require('util');
+const fs = require('fs').promises;
 const User = require('../models/userModel');
 const Music = require('../models/musicModel');
 const sendMail = require('../utilities/sendMail');
@@ -215,11 +216,13 @@ exports.uploadProfileImage = async (req, res, next) => {
         const user = req.user;
         //if (!user) return next(new MyError('Please log in', 403));
 
+        const oldImg = user.profileImage.substring(37);
+
         if (!req.files.profileImage) {
             return next(new MyError('لطفا یک تصویر آپلود کنید.', 400));
         }
         const img = req.files.profileImage;
-        const link = 'uploads/images/' + img.name;
+        const link = 'uploads/images/' + Date.now() + '_' + img.name;
         const dir = __dirname + '/../public/' + link;
         console.log(img.mimetype);
         if (!img.mimetype.match(/image/g))
@@ -230,6 +233,8 @@ exports.uploadProfileImage = async (req, res, next) => {
         await user.updateOne({
             profileImage: 'https://music-pwa-api.iran.liara.run/' + link
         }, { runValidators: true, new: true });
+
+        await fs.unlink(__dirname + '/../public/' + oldImg);
 
         res.status(200).json({
             user
