@@ -164,7 +164,9 @@ exports.like = async (req, res, next) => {
             likers: list
         }, {runValidators: true, new: true});
 
-        res.end();
+        res.status(200).json({
+            done:true
+        });
     }
     catch (err) {
         next(new MyError(err, 500));
