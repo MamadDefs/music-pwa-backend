@@ -52,6 +52,7 @@ exports.playlistById = async (req, res, next) => {
         }
 
         res.status(200).json({
+            user:playlist?.owner,
             title: playlist?.title,
             musics: musics
         });
