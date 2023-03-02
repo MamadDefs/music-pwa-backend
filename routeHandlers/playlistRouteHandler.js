@@ -42,23 +42,21 @@ exports.playlists = async (req, res, next) => {
 
 exports.playlistById = async (req, res, next) => {
     try {
-        const playlistID = req.params.id;
+        const playlistID = req.body.id;
         const playlist = await Playlist.findById(playlistID);
 
         const musics = [];
-        for(let i = 0; i < playlist.musics.length; i++){
-            const music = await Music.findById(playlist.musics[i]);
+        for (let i = 0; i < playlist?.musics?.length; i++) {
+            let music = await Music.findById(playlist?.musics?.[i]);
             musics.push(music);
         }
 
         res.status(200).json({
-            playlist: {
-                title: playlist.title,
-                musics
-            }
+            title: playlist?.title,
+            musics: musics
         });
     }
-    catch(err) {
+    catch (err) {
         next(new MyError(err, 500));
     }
 }
@@ -80,7 +78,7 @@ exports.createPlaylist = async (req, res, next) => {
             playlist
         });
     }
-    catch(err) {
+    catch (err) {
         next(new MyError(err, 500));
     }
 }
@@ -97,12 +95,12 @@ exports.addToPlayList = async (req, res, next) => {
         const playlist = await Playlist.findById(playlistID);
 
         const list = playlist?.musics || [];
-        if(list.includes(musicID)) return next(new MyError('این موسیقی قبلا در این پلی‌لیست وجود دارد.', 400));
+        if (list.includes(musicID)) return next(new MyError('این موسیقی قبلا در این پلی‌لیست وجود دارد.', 400));
         list.push(musicID);
 
         await playlist?.updateOne({
             musics: list
-        }, {runValidators: true, new: true});
+        }, { runValidators: true, new: true });
 
         res.status(200).json({
             playlist
