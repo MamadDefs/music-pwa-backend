@@ -12,6 +12,8 @@ musicRouter.post('/upload-music', globalRouteHandler.protectRoutes, musicRouteHa
 
 musicRouter.post('/like/:id', globalRouteHandler.protectRoutes, musicRouteHandler.like);
 
-musicRouter.post('/liked/:id', globalRouteHandler.protectRoutes, musicRouteHandler.liked);
+musicRouter.post('/artist', musicRouteHandler.artist);
+
+musicRouter.post('/category', musicRouteHandler.category);
 
 module.exports = musicRouter;

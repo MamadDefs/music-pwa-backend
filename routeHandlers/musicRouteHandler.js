@@ -6,11 +6,9 @@ const secret = 'cda883fa7d79f5a70cf2e2b45149d2ccb2acc94caaa297679dccc7085cf3d097
 
 exports.allMusics = async (req, res, next) => {
     try {
-        const page = req.query.page * 1 || 1;
-        const limit = req.query.limit * 1 || 20;
+        const limit = req.query.limit * 1 || 9;
 
         const musics = await Music.find()
-            .skip((page - 1) * limit)
             .limit(limit);
 
         res.status(200).json({
@@ -120,28 +118,6 @@ exports.uploadMusic = async (req, res, next) => {
     }
 }
 
-exports.liked = async (req, res, next) => {
-    try {
-        const user = req.user;
-
-        const musicID = req.params.id;
-        const music = await Music.findById(musicID);
-
-        const userID = user.id;
-
-        let isLiked = false;
-        if(music.likers.includes(userID))
-            isLiked = true;
-        
-        res.status(200).json({
-            isLiked
-        });
-    } 
-    catch(err) {
-        next(new MyError(err, 500));
-    }
-}
-
 exports.like = async (req, res, next) => {
     try {
         const user = req.user;
@@ -166,6 +142,48 @@ exports.like = async (req, res, next) => {
 
         res.status(200).json({
             done:true
+        });
+    }
+    catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.artist = async (req, res, next) => {
+    try {
+        const artist = req.body.artist;
+        const limit = req.body.limit * 1 || 9;
+
+        const musics = await Music.find({
+            artist
+        }).limit(limit);
+
+        const count = musics.length;
+
+        res.status(200).json({
+            musics,
+            count
+        });
+    }
+    catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.category = async (req, res, next) => {
+    try {
+        const category = req.body.category;
+        const limit = req.body.limit * 1 || 9;
+
+        const musics = await Music.find({
+            category
+        }).limit(limit);
+
+        const count = musics.length;
+
+        res.status(200).json({
+            musics,
+            count
         });
     }
     catch (err) {

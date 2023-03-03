@@ -27,7 +27,15 @@ musicSchema.plugin(fuzzySearch, {
     fields: [{
         name: 'title',
         minSize: 3,
-        prifixOnly: true
+        weight: 5
+    },
+    {
+        name: 'artist',
+        minSize: 3
+    },
+    {
+        name: 'category',
+        minSize: 3
     }]
 });
 

@@ -12,4 +12,8 @@ playlistRouter.post('/create', globalRouteHandler.protectRoutes, playlistRouteHa
 
 playlistRouter.post('/add-to-playlist', globalRouteHandler.protectRoutes, playlistRouteHandler.addToPlayList);
 
+playlistRouter.post('/delete-music', globalRouteHandler.protectRoutes, playlistRouteHandler.deleteFromPlaylist);
+
+playlistRouter.post('/delete', globalRouteHandler.protectRoutes, playlistRouteHandler.deletePlaylist);
+
 module.exports = playlistRouter;

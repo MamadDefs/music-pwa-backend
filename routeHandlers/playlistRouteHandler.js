@@ -111,3 +111,43 @@ exports.addToPlayList = async (req, res, next) => {
         next(new MyError(err, 500));
     }
 }
+
+exports.deleteFromPlaylist = async (req, res, next) => {
+    try {
+        const playlistID = req.body.playlistID;
+        const musicID = req.body.musicID;
+
+        const playlist = await Playlist.findById(playlistID);
+
+        const list = playlist.musics;
+        for (let i = 0; i < list.length; i++)
+                if (list[i] === musicID)
+                    list.splice(i, 1);
+
+        await playlist.updateOne({
+            musics: list
+        }, { runValidators: true, new: true });
+
+        res.status(200).json({
+            playlist
+        });
+    }
+    catch (err) {
+        next(new MyError(err, 500));
+    }
+}
+
+exports.deletePlaylist = async (req, res, next) => {
+    try {
+        const playlistID = req.body.playlistID;
+
+        await Playlist.findByIdAndRemove(playlistID);
+
+        res.status(200).json({
+            done: true
+        });
+    }
+    catch (err) {
+        next(new MyError(err, 500));
+    }
+}
